@@ -138,7 +138,7 @@ tc sync --project YOUR_PROJECT_ID
 
 1. **Initial Sync**: Run the CLI to perform the first synchronization
    ```bash
-   node /path/to/cli2/src/index.js sync --project YOUR_PROJECT_ID
+   node /path/to/cli/src/index.js sync --project YOUR_PROJECT_ID
    ```
 
 2. **Make Changes**: Edit feature files to see change detection in action
