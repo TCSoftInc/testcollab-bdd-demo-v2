@@ -1,0 +1,48 @@
+# TCV-7055: Run BDD tests for every fork and sync/report when TestCollab credentials exist.
+name: BDD sync and report
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  bdd:
+    runs-on: ubuntu-latest
+    env:
+      TC_PROJECT_ID: ${{ vars.TC_PROJECT_ID }}
+      TESTCOLLAB_TOKEN: ${{ secrets.TESTCOLLAB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Sync committed feature files
+        if: env.TC_PROJECT_ID != '' && env.TESTCOLLAB_TOKEN != '' && github.event_name != 'pull_request'
+        run: npm run tc:sync
+
+      - name: Run Cucumber tests
+        run: npm run test:bdd
+
+      - name: Verify JUnit BDD identity
+        run: npm run test:junit
+
+      - name: Report results to the synced cases
+        if: env.TC_PROJECT_ID != '' && env.TESTCOLLAB_TOKEN != '' && github.event_name != 'pull_request'
+        run: npm run tc:report
+
+      - name: Upload JUnit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-junit
+          path: reports/cucumber-junit.xml

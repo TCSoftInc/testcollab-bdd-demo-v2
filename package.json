@@ -1,0 +1,24 @@
+{
+  "name": "testcollab-bdd-demo-v2",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fork-ready BDD sync and test-result reporting demo for TestCollab",
+  "type": "module",
+  "scripts": {
+    "pretest": "node scripts/prepare-reports.mjs",
+    "test": "cucumber-js --config cucumber.mjs",
+    "test:bdd": "npm test",
+    "test:junit": "node scripts/verify-junit.mjs",
+    "tc:sync": "node scripts/testcollab.mjs sync",
+    "tc:report": "node scripts/testcollab.mjs report",
+    "tc:demo": "npm run tc:sync && npm run test:bdd && npm run test:junit && npm run tc:report"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "12.9.0",
+    "@testcollab/cli": "https://github.com/TCSoftInc/testcollab-cli/archive/e23432c088db13b61e80c1809485e8515de40947.tar.gz",
+    "jsdom": "26.1.0"
+  }
+}

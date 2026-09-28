@@ -1,235 +1,225 @@
-# TestCollab BDD Demo Project
+# TestCollab BDD sync and report demo
 
-This is a sample project demonstrating how to use the TestCollab CLI for Git-based synchronization of Gherkin feature files with TestCollab projects.
+This repository is a complete example of one BDD workflow:
 
-## Project Overview
+1. `tc sync` maps committed `.feature` files to TestCollab suites, test cases, and datasets.
+2. Cucumber runs the same scenarios and writes a JUnit report.
+3. `tc report` maps the JUnit results back to those synced cases without IDs in the feature files.
 
-This demo includes:
-- A simple single-page web application with login and profile management features (only for reference, no need to run it)
-- Gherkin feature files that describe the application's behavior using BDD syntax
-- A Git repository with proper commit history to demonstrate change detection
-- Complete instructions for using the TestCollab CLI with local development
+Fork the repository, replace the project ID and API token, and run the workflow. The demo uses the official `@testcollab/cli` package and a small browser-like DOM, so no test server or browser download is required.
 
-## Quickstart
+## What this sample covers
 
-1. Fork this repo (recommended) or clone to your local machine.
+- Feature and scenario tags
+- Feature and Rule backgrounds
+- `Rule:` sections
+- Scenario Outlines and multiple Examples rows
+- TestCollab test datasets and `{{parameter}}` substitution
+- Step Data Tables
+- Doc Strings with line breaks
+- Cucumber JUnit output
+- Title-based result mapping from Cucumber to BDD-synced cases
+- Local and GitHub Actions workflows
 
-2. Create a new project on Test Collab and note the project ID. Locate your project ID in the TestCollab web UI:
+## From Gherkin to a TestCollab dataset
 
-   ![Find your project ID](docs/project_id.png)
+![A Scenario Outline and Examples table mapped to one TestCollab test case and its linked dataset](docs/bdd-dataset-mapping.png)
 
-3. Create a new API token that will be used to sync .feature files. Click on your user on top right > My profile settings > API token. Click on generate and copy the token.
+The important mapping is:
 
-   ![Create new API token](docs/api_token.png)
+| In the `.feature` file | In TestCollab |
+|---|---|
+| Feature title | BDD-managed test suite |
+| Scenario or Scenario Outline | BDD-managed test case |
+| `Scenario Outline: Sign in as <email>` | Test case title `Sign in as {{email}}` |
+| `<email>` in a title or step | Dataset reference `{{email}}` |
+| Examples header | Dataset columns |
+| Examples rows | Dataset rows |
+| Step Data Table | Table displayed inside that step |
+| Doc String | Preformatted text displayed inside that step |
+| Directory path | Parent suite hierarchy |
 
-4. Go to your new forked / cloned repo and run this:
+A Scenario Outline creates one TestCollab case, not one case per Examples row. Its Examples table becomes the linked dataset. When Cucumber expands the outline into several JUnit results, `tc report` rolls those rows back into the same TestCollab execution.
 
-   ```bash
-    export TESTCOLLAB_TOKEN=abcdef...
-    npx testcollab-cli sync --project {projectId}
-    ```
+This is the suite tree created by the original version of this sample:
 
-You should see something like this:
+![TestCollab test case list after BDD sync](docs/synced.png)
 
-   ```bash
-   🔍 Fetching sync state from TestCollab...
+## Quick start
 
-   📊 Last synced commit: none (initial sync)
+### 1. Fork and install
 
-   📊 Current HEAD commit: 2d22cc08f26decc5732e3386b3ee61a206b5d3ac
-
-   🔍 Analyzing changes...
-
-   ...
-
-   🚀 Syncing with TestCollab...
-
-   📊 Synchronization Results:
-
-   ✅ Synchronization completed successfully
-   ```
-
-And if you go to your test cases page in project now, you should see all test cases and test suites created:
-
-![Synced project](docs/synced.png)
-
-## Project Structure
-
-```
-testcollab-bdd-demo/
-├── README.md                    # This documentation
-├── index.html                   # Simple web application
-├── style.css                    # Basic styling
-├── script.js                   # Application logic
-├── .gitignore                   # Git ignore file
-└── features/                    # Gherkin feature files
-    ├── auth/
-    │   └── user_login.feature   # Authentication scenarios
-    └── account/
-        └── profile_management.feature  # Profile management scenarios
-```
-
-To understand how the test suite tree is created, check out any feature file and compare that to above synced test case page screenshot.
-
-
-
-## Using with TestCollab CLI
-
-    ```bash
-    npx testcollab-cli --help
-    ```
-
-You can install it as global package:
-
-    ```bash
-    npm install -g testcollab-cli
-    tc --help
-    tc sync --project 1234
-    ```
-
-
-
-### Prerequisites
-
-1. **TestCollab CLI setup**: Ensure you have the TestCollab CLI available locally
-2. **API Token**: Set your TestCollab API token as an environment variable
-3. **TestCollab Project**: Have a TestCollab project ID ready
-
-### Environment Setup
+Use Node.js 20 or newer.
 
 ```bash
-# Set your TestCollab API token
-export TESTCOLLAB_TOKEN=your_api_token_here
-
-# For Windows
-set TESTCOLLAB_TOKEN=your_api_token_here
+git clone https://github.com/YOUR_ACCOUNT/testcollab-bdd-demo-v2.git
+cd testcollab-bdd-demo-v2
+npm ci
 ```
 
-### CLI Usage Examples
+### 2. Create a TestCollab project
 
-#### Option 1: From npx
+Create or select a project on [TestCollab](https://testcollab.com). Copy the number from the project URL.
 
+![Where to find the TestCollab project ID](docs/project_id.png)
+
+Scenario Outline datasets require an Elite or Enterprise plan. On another plan, the scenarios still sync, but the CLI prints a warning and does not create their linked datasets.
+
+### 3. Create an API token
+
+Open your profile menu, select **My profile settings**, open **API token**, and generate a token.
+
+![Where to generate a TestCollab API token](docs/api_token.png)
+
+The token owner needs permission to create suites, test cases, datasets, tags, test plans, and assignments. An Administrator or Lead role is the simplest choice for this demo.
+
+### 4. Add local configuration
 
 ```bash
-# Navigate to the demo project
-cd /path/to/testcollab-bdd-demo
-
-# Run initial sync
-npx testcollab-cli sync --project YOUR_PROJECT_ID
-
-# Example with specific API URL
-npx testcollab-cli sync --project YOUR_PROJECT_ID --api-url https://your-api.testcollab.io
+cp .env.example .env
 ```
 
-#### Option 2: Installing as npm package
+Edit `.env`:
 
-If you've installed the CLI as global package:
+```dotenv
+TC_PROJECT_ID=1234
+TESTCOLLAB_TOKEN=your_api_token
+```
+
+Do not commit `.env`. It is ignored by Git.
+
+### 5. Run the complete flow
 
 ```bash
-npm install -g testcollab-cli
+npm run tc:demo
 ```
+
+That command runs these steps in order:
 
 ```bash
-cd testcollab-bdd-demo
-tc sync --project YOUR_PROJECT_ID
+npm run tc:sync
+npm run test:bdd
+npm run test:junit
+npm run tc:report
 ```
 
-### Demo Workflow
+The result is:
 
-1. **Initial Sync**: Run the CLI to perform the first synchronization
-   ```bash
-   node /path/to/cli/src/index.js sync --project YOUR_PROJECT_ID
-   ```
+- Two feature suites under the `Account` and `Auth` directory suites.
+- Four BDD-managed test cases in TestCollab. The two outlines expand to six Cucumber executions, then roll back into their two cases.
+- Two linked datasets built from the Examples tables.
+- One CI test plan containing the synced cases.
+- Passed execution results reported from `reports/cucumber-junit.xml`.
 
-2. **Make Changes**: Edit feature files to see change detection in action
-   ```bash
-   # Edit a feature file
-   vim features/auth/user_login.feature
-   
-   # Commit changes
-   git add features/auth/user_login.feature
-   git commit -m "Update login scenarios"
-   ```
+## Why `tc report` finds the synced cases
 
-3. **Sync Changes**: Run CLI again to sync the modifications
-   ```bash
-   tc sync --project YOUR_PROJECT_ID
-   ```
+Cucumber writes the feature title to JUnit `classname` and the scenario title to `name`:
 
-4. **Observe Results**: Check the CLI output for sync statistics
-
-### Expected CLI Output
-
-#### Initial Sync
-```
-🔍 Fetching sync state from TestCollab...
-📊 Last synced commit: none (initial sync)
-📊 Current HEAD commit: abc123...
-🔍 Analyzing changes...
-📄 Found 2 change(s)
-🔧 Processing changes and calculating hashes...
-🔍 Resolving existing item IDs...
-📦 Building sync payload...
-🚀 Syncing with TestCollab...
-
-📊 Synchronization Results:
-✨ Created 2 suite(s)
-✨ Created 5 test case(s)
-✅ Synchronization completed successfully
+```xml
+<testcase
+  classname="User profile management"
+  name="Update profile from a Gherkin data table" />
 ```
 
-#### Subsequent Sync
-```
-🔍 Fetching sync state from TestCollab...
-📊 Last synced commit: abc123...
-📊 Current HEAD commit: def456...
-🔍 Analyzing changes...
-📄 Found 1 change(s)
-🔧 Processing changes and calculating hashes...
-🔍 Resolving existing item IDs...
-📦 Building sync payload...
-🚀 Syncing with TestCollab...
+`tc sync` stored those same titles as a suite and a case. `tc report` uses the pair to resolve the case. You do not need `[TC-123]` markers in the feature file.
 
-📊 Synchronization Results:
-🔄 Updated 1 test case(s)
-✅ Synchronization completed successfully
+Scenario Outline rows have longer generated names. The CLI understands Cucumber's Rule, outline, Examples, row-number, and expanded-title format. `npm run test:junit` calls the CLI's real BDD matcher against all six generated results. The command fails if a reporter change would stop the results from matching.
+
+Keep these rules in mind:
+
+- Run `tc sync` for the same commit before `tc report`.
+- Keep feature titles unique in the TestCollab project.
+- Commit feature changes before syncing. `tc sync` ignores uncommitted changes.
+- Let Git own BDD-managed cases and datasets. Edit the `.feature` file, then sync again.
+- Avoid changing a feature title and reporting results before that rename has synced.
+
+## Explore the advanced Gherkin examples
+
+### Scenario Outlines and datasets
+
+[`features/auth/user_login.feature`](features/auth/user_login.feature) contains two Rule sections and two Scenario Outlines. Each Examples table becomes a linked TestCollab dataset. Parameters are converted from `<email>` to `{{email}}` in the synced title and steps.
+
+### Step Data Tables and Doc Strings
+
+[`features/account/profile_management.feature`](features/account/profile_management.feature) contains a step Data Table and a multiline Doc String. These stay inside the step content. They do not become TestCollab datasets. Only a Scenario Outline's Examples table creates a dataset.
+
+### The test implementation
+
+[`features/step_definitions/demo.steps.js`](features/step_definitions/demo.steps.js) drives the real page in `index.html` through JSDOM. [`features/support/world.js`](features/support/world.js) gives every scenario a fresh application and session.
+
+## Run commands separately
+
+Run only the tests and create JUnit:
+
+```bash
+npm run test:bdd
 ```
+
+Sync committed feature changes:
+
+```bash
+npm run tc:sync
+```
+
+Report an existing JUnit file after sync:
+
+```bash
+npm run tc:report
+```
+
+Use the EU region by adding this to `.env`:
+
+```dotenv
+TC_API_URL=https://api-eu.testcollab.io
+```
+
+## GitHub Actions
+
+The workflow at [`.github/workflows/bdd.yml`](.github/workflows/bdd.yml) always runs the Cucumber suite on pushes and pull requests. It also syncs and reports on non-pull-request runs when these repository settings exist:
+
+- Actions variable `TC_PROJECT_ID`
+- Actions secret `TESTCOLLAB_TOKEN`
+
+The checkout uses full Git history because `tc sync` calculates changes from Git commits. Forks without TestCollab credentials still run the tests and upload the JUnit report; they skip sync and report.
+
+## CLI package source
+
+The dependency name is `@testcollab/cli`. This repository pins the official BDD enhancement commit so the sync-to-report title matching shown here is present and reproducible. After that release is published to npm, the dependency can be changed to its released version without changing any command.
 
 ## Troubleshooting
 
-### Common Issues
+### `TC_PROJECT_ID is required`
 
-1. **"Not in a Git repository"**
-   ```bash
-   # Ensure you're in the demo directory
-   cd testcollab-bdd-demo
-   # Check Git status
-   git status
-   ```
+Copy `.env.example` to `.env` and replace both placeholders. You can also export `TC_PROJECT_ID` and `TESTCOLLAB_TOKEN` in your shell.
 
-2. **"TESTCOLLAB_TOKEN environment variable is not set"**
-   ```bash
-   export TESTCOLLAB_TOKEN=your_actual_token
-   ```
+### The CLI reports no feature changes
 
-3. **API connection errors**
-   - Verify your API token is valid
-   - Check the API URL parameter
-   - Ensure network connectivity
+Commit the `.feature` files first:
 
+```bash
+git add features
+git commit -m "Update BDD scenarios"
+npm run tc:sync
+```
 
+### A Scenario Outline has no linked dataset
 
-## Next Steps
+Check that the project plan includes test datasets and that the `test_datasets` feature is available. The sync output includes a warning when this feature is unavailable.
 
-After running this demo:
+### Results are unmatched
 
-1. **Explore TestCollab**: Check your TestCollab project to see the synchronized suites and test cases
-2. **Customize Features**: Modify the feature files to match your application's requirements
-3. **Integrate CI/CD**: Add the CLI sync command to your continuous integration pipeline. 
-[Integration with CI/CD pipelines &rarr;](https://github.com/TCSoftInc/testcollab-cli?tab=readme-ov-file#cicd-integration)
+Run `npm run tc:sync` before `npm run tc:report`. Then run `npm run test:junit`. It verifies the exact feature and scenario identities consumed by the CLI.
+
+### Use a local or private TestCollab API
+
+Set `TC_API_URL` in `.env`, for example:
+
+```dotenv
+TC_API_URL=http://localhost:1337
+```
 
 ## Support
 
-For issues with the TestCollab CLI:
-- [CLI documentation](https://github.com/TCSoftInc/testcollab-cli?tab=readme-ov-file)
-- Support: support@testcollab.com
+- [TestCollab CLI](https://github.com/TCSoftInc/testcollab-cli)
+- [TestCollab](https://testcollab.com)
+- support@testcollab.com

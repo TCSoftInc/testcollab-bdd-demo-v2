@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">Scenario Outline to TestCollab dataset mapping</title>
+  <desc id="description">A Gherkin Scenario Outline and Examples table on the left map to one TestCollab case and a linked dataset on the right.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.14"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4263eb"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#f5f7fb"/>
+  <text x="80" y="78" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="700" fill="#17233c">How a Scenario Outline maps into TestCollab</text>
+  <text x="80" y="120" font-family="Inter, Arial, sans-serif" font-size="21" fill="#5d6b82">One outline becomes one test case. The Examples header and rows become its linked test dataset.</text>
+
+  <g filter="url(#shadow)">
+    <rect x="80" y="170" width="650" height="640" rx="20" fill="#111827"/>
+  </g>
+  <circle cx="116" cy="208" r="7" fill="#ff5f57"/>
+  <circle cx="140" cy="208" r="7" fill="#febc2e"/>
+  <circle cx="164" cy="208" r="7" fill="#28c840"/>
+  <text x="195" y="216" font-family="Inter, Arial, sans-serif" font-size="18" fill="#a7b3c7">features/auth/user_login.feature</text>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">
+    <text x="116" y="278" fill="#c084fc">Scenario Outline:</text>
+    <text x="330" y="278" fill="#f8fafc">Sign in as</text>
+    <text x="456" y="278" fill="#60a5fa">&lt;email&gt;</text>
+
+    <text x="116" y="326" fill="#c084fc">When</text>
+    <text x="184" y="326" fill="#f8fafc">I sign in with</text>
+    <text x="367" y="326" fill="#60a5fa">"&lt;email&gt;"</text>
+    <text x="490" y="326" fill="#f8fafc">and</text>
+    <text x="540" y="326" fill="#60a5fa">"&lt;password&gt;"</text>
+
+    <text x="116" y="374" fill="#c084fc">Then</text>
+    <text x="184" y="374" fill="#f8fafc">I should see</text>
+    <text x="340" y="374" fill="#60a5fa">"&lt;welcome&gt;"</text>
+
+    <text x="116" y="450" fill="#c084fc">Examples:</text>
+    <text x="235" y="450" fill="#f8fafc">Active accounts</text>
+
+    <rect x="108" y="482" width="594" height="210" rx="10" fill="#1f2937" stroke="#475569"/>
+    <path d="M108 552H702 M108 622H702 M318 482V692 M492 482V692" stroke="#475569" stroke-width="2"/>
+    <text x="132" y="526" fill="#93c5fd">email</text>
+    <text x="342" y="526" fill="#93c5fd">password</text>
+    <text x="516" y="526" fill="#93c5fd">welcome</text>
+    <text x="132" y="596" fill="#e5e7eb">valid@example.com</text>
+    <text x="342" y="596" fill="#e5e7eb">correct...</text>
+    <text x="516" y="596" fill="#e5e7eb">Welcome John</text>
+    <text x="132" y="666" fill="#e5e7eb">jane@example.com</text>
+    <text x="342" y="666" fill="#e5e7eb">mypassword...</text>
+    <text x="516" y="666" fill="#e5e7eb">Welcome Jane</text>
+  </g>
+
+  <path d="M748 310 C800 310, 810 310, 860 310" fill="none" stroke="#4263eb" stroke-width="5" marker-end="url(#arrow)"/>
+  <text x="765" y="290" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#4263eb">tc sync</text>
+
+  <g filter="url(#shadow)">
+    <rect x="880" y="170" width="640" height="640" rx="20" fill="#ffffff"/>
+  </g>
+  <rect x="880" y="170" width="640" height="78" rx="20" fill="#182b49"/>
+  <path d="M880 228H1520" stroke="#182b49" stroke-width="40"/>
+  <text x="920" y="220" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700" fill="#ffffff">TestCollab test case</text>
+
+  <text x="920" y="292" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#718096">TITLE</text>
+  <text x="920" y="332" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="700" fill="#17233c">Sign in as <tspan fill="#4263eb">{{email}}</tspan></text>
+
+  <text x="920" y="390" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#718096">STEPS</text>
+  <rect x="920" y="410" width="558" height="108" rx="12" fill="#f7f9fc" stroke="#dfe5ef"/>
+  <text x="944" y="452" font-family="Inter, Arial, sans-serif" font-size="20" fill="#26364f">When I sign in with <tspan fill="#4263eb" font-weight="700">{{email}}</tspan> and <tspan fill="#4263eb" font-weight="700">{{password}}</tspan></text>
+  <text x="944" y="494" font-family="Inter, Arial, sans-serif" font-size="20" fill="#26364f">Then I should see <tspan fill="#4263eb" font-weight="700">{{welcome}}</tspan></text>
+
+  <text x="920" y="570" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#718096">LINKED TEST DATASET</text>
+  <rect x="920" y="592" width="558" height="166" rx="12" fill="#ffffff" stroke="#cfd8e6" stroke-width="2"/>
+  <rect x="920" y="592" width="558" height="54" rx="12" fill="#eef2ff"/>
+  <path d="M920 646H1478 M920 704H1478 M1110 592V758 M1286 592V758" stroke="#cfd8e6" stroke-width="2"/>
+  <text x="942" y="626" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#334155">email</text>
+  <text x="1132" y="626" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#334155">password</text>
+  <text x="1308" y="626" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#334155">welcome</text>
+  <text x="942" y="682" font-family="Inter, Arial, sans-serif" font-size="16" fill="#334155">valid@example.com</text>
+  <text x="1132" y="682" font-family="Inter, Arial, sans-serif" font-size="16" fill="#334155">correct...</text>
+  <text x="1308" y="682" font-family="Inter, Arial, sans-serif" font-size="16" fill="#334155">Welcome John</text>
+  <text x="942" y="739" font-family="Inter, Arial, sans-serif" font-size="16" fill="#334155">jane@example.com</text>
+  <text x="1132" y="739" font-family="Inter, Arial, sans-serif" font-size="16" fill="#334155">mypassword...</text>
+  <text x="1308" y="739" font-family="Inter, Arial, sans-serif" font-size="16" fill="#334155">Welcome Jane</text>
+
+  <text x="80" y="862" font-family="Inter, Arial, sans-serif" font-size="18" fill="#5d6b82">The placeholders change from &lt;name&gt; to {{name}} so TestCollab can substitute each dataset row during a test run.</text>
+</svg>
