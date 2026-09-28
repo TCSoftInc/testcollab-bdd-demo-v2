@@ -41,9 +41,11 @@ The important mapping is:
 
 A Scenario Outline creates one TestCollab case, not one case per Examples row. Its Examples table becomes the linked dataset. When Cucumber expands the outline into several JUnit results, `tc report` rolls those rows back into the same TestCollab execution.
 
-This is the suite tree created by the original version of this sample:
+Here is that mapping after running this repository against TestCollab. The synced
+case keeps `{{email}}`, `{{password}}`, and `{{welcome}}` in its steps and links
+the two Examples rows as an editable dataset:
 
-![TestCollab test case list after BDD sync](docs/synced.png)
+![The synced TestCollab case, parameterized steps, linked dataset rows, and passed status](docs/testcollab-dataset.png)
 
 ## Quick start
 
@@ -110,6 +112,11 @@ The result is:
 - Two linked datasets built from the Examples tables.
 - One CI test plan containing the synced cases.
 - Passed execution results reported from `reports/cucumber-junit.xml`.
+
+The automatically created plan is completed by `tc report`, with all four synced
+cases passed:
+
+![A TestCollab test plan created by tc report with four passed cases and 100 percent completion](docs/testcollab-report.png)
 
 ## Why `tc report` finds the synced cases
 
