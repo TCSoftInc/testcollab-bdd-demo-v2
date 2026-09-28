@@ -8,44 +8,32 @@ This repository is a complete example of one BDD workflow:
 
 Fork the repository, replace the project ID and API token, and run the workflow. The demo uses the official `@testcollab/cli` package and a small browser-like DOM, so no test server or browser download is required.
 
-## What this sample covers
+## Start with a basic example
 
-- Feature and scenario tags
-- Feature and Rule backgrounds
-- `Rule:` sections
-- Scenario Outlines and multiple Examples rows
-- TestCollab test datasets and `{{parameter}}` substitution
-- Step Data Tables
-- Doc Strings with line breaks
-- Cucumber JUnit output
-- Title-based result mapping from Cucumber to BDD-synced cases
-- Local and GitHub Actions workflows
+The smallest useful BDD test has one Feature, one Scenario, and a few steps:
 
-## From Gherkin to a TestCollab dataset
+```gherkin
+Feature: User login
 
-![A Scenario Outline and Examples table mapped to one TestCollab test case and its linked dataset](docs/bdd-dataset-mapping.png)
+  Scenario: Registered user signs in
+    Given the demo application is open
+    And I am on the login page
+    When I sign in with "valid@example.com" and "correctpassword"
+    Then I should see the welcome message "Welcome back, John Doe!"
+```
 
-The important mapping is:
+The basic mapping is direct:
 
 | In the `.feature` file | In TestCollab |
 |---|---|
 | Feature title | BDD-managed test suite |
-| Scenario or Scenario Outline | BDD-managed test case |
-| `Scenario Outline: Sign in as <email>` | Test case title `Sign in as {{email}}` |
-| `<email>` in a title or step | Dataset reference `{{email}}` |
-| Examples header | Dataset columns |
-| Examples rows | Dataset rows |
-| Step Data Table | Table displayed inside that step |
-| Doc String | Preformatted text displayed inside that step |
-| Directory path | Parent suite hierarchy |
+| Scenario title | BDD-managed test case |
+| Given, When, and Then lines | Test steps and expected results |
 
-A Scenario Outline creates one TestCollab case, not one case per Examples row. Its Examples table becomes the linked dataset. When Cucumber expands the outline into several JUnit results, `tc report` rolls those rows back into the same TestCollab execution.
-
-Here is that mapping after running this repository against TestCollab. The synced
-case keeps `{{email}}`, `{{password}}`, and `{{welcome}}` in its steps and links
-the two Examples rows as an editable dataset:
-
-![The synced TestCollab case, parameterized steps, linked dataset rows, and passed status](docs/testcollab-dataset.png)
+That is enough to understand the workflow: `tc sync` creates the suite and case,
+Cucumber runs the scenario, and `tc report` sends its result back to the same
+case. The repository then builds on this foundation with datasets, tags, Rules,
+Data Tables, and Doc Strings.
 
 ## Quick start
 
@@ -117,6 +105,48 @@ The automatically created plan is completed by `tc report`, with all four synced
 cases passed:
 
 ![A TestCollab test plan created by tc report with four passed cases and 100 percent completion](docs/testcollab-report.png)
+
+## Build on it with advanced Gherkin
+
+Once the basic flow is clear, the included feature files demonstrate:
+
+- Feature and scenario tags
+- Feature and Rule backgrounds
+- `Rule:` sections
+- Scenario Outlines and multiple Examples rows
+- TestCollab test datasets and `{{parameter}}` substitution
+- Step Data Tables
+- Doc Strings with line breaks
+- Cucumber JUnit output
+- Title-based result mapping from Cucumber to BDD-synced cases
+
+### From a Scenario Outline to a TestCollab dataset
+
+![A Scenario Outline and Examples table mapped to one TestCollab test case and its linked dataset](docs/bdd-dataset-mapping.png)
+
+The advanced mapping adds these rules:
+
+| In the `.feature` file | In TestCollab |
+|---|---|
+| Scenario Outline | One BDD-managed test case |
+| `Scenario Outline: Sign in as <email>` | Test case title `Sign in as {{email}}` |
+| `<email>` in a title or step | Dataset reference `{{email}}` |
+| Examples header | Dataset columns |
+| Examples rows | Dataset rows |
+| Step Data Table | Table displayed inside that step |
+| Doc String | Preformatted text displayed inside that step |
+| Directory path | Parent suite hierarchy |
+
+A Scenario Outline creates one TestCollab case, not one case per Examples row.
+Its Examples table becomes the linked dataset. When Cucumber expands the outline
+into several JUnit results, `tc report` rolls those rows back into the same
+TestCollab execution.
+
+Here is that mapping after running this repository against TestCollab. The synced
+case keeps `{{email}}`, `{{password}}`, and `{{welcome}}` in its steps and links
+the two Examples rows as an editable dataset:
+
+![The synced TestCollab case, parameterized steps, linked dataset rows, and passed status](docs/testcollab-dataset.png)
 
 ## Why `tc report` finds the synced cases
 
