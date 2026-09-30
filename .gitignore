@@ -49,8 +49,9 @@ jspm_packages/
 .env.local
 .env.production
 
-# Coverage directory used by tools like istanbul
+# Coverage and test report directories
 coverage/
+reports/
 
 # Build directories
 build/
