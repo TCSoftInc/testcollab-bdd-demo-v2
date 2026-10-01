@@ -184,6 +184,10 @@ Keep these rules in mind:
 
 [`features/helpdesk/overview.feature`](features/helpdesk/overview.feature) is a larger file: two Rule sections, a Background, a Scenario Outline with a parameter in its title, a one-cell Data Table, two 36-row Data Tables, a comment between steps, and tags on the Feature, a Rule, and a Scenario. It is tagged `@sync-only`. `tc sync` turns it into five test cases with their steps, and Cucumber skips it (`tags: "not @sync-only"` in [`cucumber.mjs`](cucumber.mjs)), so it needs no step definitions.
 
+After the sync, the case `Download with UTC times` keeps its steps, and the step table sits inside the expected result of the step it belongs to:
+
+![The synced case Download with UTC times: six steps, and the step table inside the expected result of step 6](docs/testcollab-step-table.png)
+
 ### The test implementation
 
 [`features/step_definitions/demo.steps.js`](features/step_definitions/demo.steps.js) drives the real page in `index.html` through JSDOM. [`features/support/world.js`](features/support/world.js) gives every scenario a fresh application and session.
