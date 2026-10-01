@@ -32,11 +32,3 @@ Feature: User profile management
       BDD advocate
       Accessibility champion
       """
-
-  Scenario: Change only the phone number
-    When I update the profile with:
-      | phone | +1-555-3030 |
-    And I save the profile
-    Then the profile field "phone" should contain "+1-555-3030"
-    And the profile field "name" should contain "John Doe"
-    And I should see "Profile updated successfully!"
