@@ -7,7 +7,11 @@ import { parseJUnitReport } from "@testcollab/cli/src/commands/report.js";
 const report = readFileSync("reports/cucumber-junit.xml", "utf8");
 const testcases = parseJUnitReport(report).allTests;
 
-assert.equal(testcases.length, 6, "Expected all six Cucumber examples and scenarios in JUnit");
+// TCV-7055: the four outline rows guard the Rule and Examples names; the profile scenarios
+// may grow or shrink, as they do when a pull request adds or removes one.
+const outlineRows = testcases.filter(testcase => testcase.classname === "User login");
+assert.equal(outlineRows.length, 4, "Expected the four Scenario Outline rows of User login in JUnit");
+assert.ok(testcases.length > outlineRows.length, "Expected the profile scenarios in JUnit");
 
 for (const testcase of testcases) {
   const feature = testcase.classname;
@@ -37,4 +41,4 @@ for (const testcase of testcases) {
   );
 }
 
-console.log("All six JUnit results match the TestCollab cases created by tc sync.");
+console.log(`All ${testcases.length} JUnit results match the TestCollab cases created by tc sync.`);

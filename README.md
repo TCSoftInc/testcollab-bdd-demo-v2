@@ -95,13 +95,13 @@ npm run tc:report
 
 The result is:
 
-- Two feature suites under the `Account` and `Auth` directory suites.
-- Four BDD-managed test cases in TestCollab. The two outlines expand to six Cucumber executions, then roll back into their two cases.
-- Two linked datasets built from the Examples tables.
-- One CI test plan containing the synced cases.
+- Three feature suites under the `Account`, `Auth`, and `Helpdesk` directory suites.
+- Nine BDD-managed test cases in TestCollab. Cucumber runs four of them: its two outlines expand to six executions, then roll back into their two cases. The other five come from the sync-only helpdesk file.
+- Three linked datasets built from the Examples tables.
+- One CI test plan containing the four cases that Cucumber ran.
 - Passed execution results reported from `reports/cucumber-junit.xml`.
 
-The automatically created plan is completed by `tc report`, with all four synced
+The automatically created plan is completed by `tc report`, with all four executed
 cases passed:
 
 ![A TestCollab test plan created by tc report with four passed cases and 100 percent completion](docs/testcollab-report.png)
@@ -180,6 +180,10 @@ Keep these rules in mind:
 
 [`features/account/profile_management.feature`](features/account/profile_management.feature) contains a step Data Table and a multiline Doc String. These stay inside the step content. They do not become TestCollab datasets. Only a Scenario Outline's Examples table creates a dataset.
 
+### A sync-only feature file
+
+[`features/helpdesk/overview.feature`](features/helpdesk/overview.feature) is a larger file: two Rule sections, a Background, a Scenario Outline with a parameter in its title, a one-cell Data Table, two 36-row Data Tables, a comment between steps, and tags on the Feature, a Rule, and a Scenario. It is tagged `@sync-only`. `tc sync` turns it into five test cases with their steps, and Cucumber skips it (`tags: "not @sync-only"` in [`cucumber.mjs`](cucumber.mjs)), so it needs no step definitions.
+
 ### The test implementation
 
 [`features/step_definitions/demo.steps.js`](features/step_definitions/demo.steps.js) drives the real page in `index.html` through JSDOM. [`features/support/world.js`](features/support/world.js) gives every scenario a fresh application and session.
@@ -221,7 +225,7 @@ The checkout uses full Git history because `tc sync` calculates changes from Git
 
 ## CLI package source
 
-The dependency name is `@testcollab/cli`. This repository pins the official BDD enhancement commit so the sync-to-report title matching shown here is present and reproducible. After that release is published to npm, the dependency can be changed to its released version without changing any command.
+The dependency is pinned to the npm release `@testcollab/cli` 1.21.0. It has every BDD sync and report feature shown here.
 
 ## Troubleshooting
 
