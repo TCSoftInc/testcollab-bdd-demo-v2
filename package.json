@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@cucumber/cucumber": "12.9.0",
-    "@testcollab/cli": "https://github.com/TCSoftInc/testcollab-cli/archive/e23432c088db13b61e80c1809485e8515de40947.tar.gz",
+    "@testcollab/cli": "1.21.0",
     "jsdom": "26.1.0"
   }
 }
